@@ -25,7 +25,7 @@ class AppUserManager(BaseUserManager):
 
 
 
-class AppUser(AbstractUser, PermissionsMixin):
+class AppUser(AbstractUser):
     
     username = None
     email = models.EmailField(unique=True)
