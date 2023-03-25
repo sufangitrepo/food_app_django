@@ -8,9 +8,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 
-from .serializer import AppUserRegisterSerializer,LoginSeriliazer
+from .serializer import AppUserRegisterSerializer,LoginSeriliazer, UserDetailSerializer
 from .models import AppUser
 
+RESPONSE = 'response'
+ERROR = 'error'
 
 class RegisterView(APIView):
 
@@ -34,19 +36,22 @@ class LoginView(APIView):
         try:
             user = AppUser.objects.get(email=login_serializer.validated_data['email'])
         except ObjectDoesNotExist:
-            return Response({'error':'user doesnot exist'}, status=status.HTTP_404_NOT_FOUND)
-        except Exception:
-            return Response({'error':'something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({ERROR:'user doesnot exist'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return Response({ERROR:'something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
         if user:
             if user.check_password(raw_password=login_serializer.validated_data['password']):
                 token, created = Token.objects.get_or_create(user=user)
+
                 return Response({'email': str(user.email),
                                  'token':str(token),
                                  'is_staff':user.is_staff, 
                                  'is_superuser':user.is_superuser,
-                                 'response': 'login successfully'})
+                                 RESPONSE: 'login successfully'})
             else :
-                return Response({'error':'password is not correct'})
+                return Response({ERROR:'password is not correct'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -54,5 +59,18 @@ class LoginView(APIView):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def logout(request: HttpRequest)-> Response:
+
     request.user.auth_token.delete()
-    return Response({'response':'logout successsfully'})
+    return Response({RESPONSE:'logout successsfully'})
+
+
+
+@api_view(["GET"])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def user_profile(request: HttpRequest)-> Response:
+    user = UserDetailSerializer(request.user)
+    return Response(user.data)
+
+
+
