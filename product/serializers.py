@@ -12,6 +12,7 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
 class CategorySerilaizer(serializers.ModelSerializer):
     class Meta:
         model = Category
