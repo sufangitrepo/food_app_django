@@ -26,7 +26,7 @@ class AppUserManager(BaseUserManager):
 
 
 
-class AppUser(AbstractUser, PermissionsMixin):
+class AppUser(AbstractUser):
     
     def profile_directory(instance, filename):
         return '/'.join(['images',str(instance.email),filename])
