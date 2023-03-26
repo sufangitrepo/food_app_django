@@ -6,17 +6,13 @@ from .models import AppUser
 class AppUserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
-        fields = '__all__'
+        fields =['email', 'first_name', 'last_name', 'is_staff', 'password']
 
 
     def create(self, validated_data):
-        user:AppUser = AppUser.objects.create(email=validated_data['email'], 
-                                              first_name=validated_data['first_name'],
-                                              last_name=validated_data['last_name'],
-                                              is_staff = validated_data['is_staff']
-                                              )
-        user.set_password(raw_password=validated_data['password'])
-
+        password = validated_data.pop('password')
+        user:AppUser = AppUser.objects.create(**validated_data)
+        user.set_password(raw_password=password)
         user.save()
         return user
 
@@ -29,10 +25,6 @@ class LoginSeriliazer(serializers.Serializer):
     password = serializers.CharField()
     
     
-class UserDetailSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
         
     
 
