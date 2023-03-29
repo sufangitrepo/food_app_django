@@ -129,6 +129,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'app_authentication.AppUser'
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+# MEDIA_URL = 'media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
+AWS_STORAGE_BUCKET_NAME = 'foodapp-bucket123'
+AWS_S3_SECRET_ACCESS_KEY = 'P02Cg7hqt5uU2A9X5IwbuhaD4Nr7GsF/2fqcVBT2'
+AWS_S3_ACCESS_KEY_ID = 'AKIA42NZWEATUTDHSO52'
+S3_BUCKET_URL = 'https://foodapp-bucket123.s3.ap-south-1.amazonaws.com/'
