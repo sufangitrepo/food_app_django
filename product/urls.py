@@ -21,7 +21,7 @@ router.register('favouriteProduct',FavouriteView, basename='favourite' )
 
 
 urlpatterns = [
-    path('category/<int:id>' , CategoryView.as_view()),
+    path('category/<int:id>/' , CategoryView.as_view()),
     path('addCategory/' , add_category),
     path('categories' , get_categories),
 

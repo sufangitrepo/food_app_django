@@ -7,7 +7,11 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    product_name = models.CharField( max_length=100)
+    
+    def path(instance, filename):
+        return ''.join(['images/',f'{instance.product_name}/',filename])
+    
+    product_name = models.CharField(unique=True, max_length=100)
     qty = models.IntegerField(default=0)
     category = models.ForeignKey(to=Category, on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=100, decimal_places=3)

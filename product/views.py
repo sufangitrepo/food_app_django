@@ -15,8 +15,7 @@ from botocore.exceptions import ClientError
 from .serializers import (
     CategorySerilaizer,
     ProductSerializer,
-    FavouriteSerializer,
-    FetchFavouriteSerializer
+    FavouriteSerializer
 )
 
 from .models import (
@@ -81,34 +80,43 @@ class CategoryView(APIView):
 
 
 
+
+def upDateImage(name, image,):
+        s3_client = boto3.client('s3',
+                                aws_access_key_id=settings.AWS_S3_ACCESS_KEY_ID, 
+                                aws_secret_access_key=settings.AWS_S3_SECRET_ACCESS_KEY)
+        
+        s3_client.upload_fileobj(image,
+                                settings.AWS_STORAGE_BUCKET_NAME,
+                                name    
+                                )
+       
+
+
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAdminUser])
 def add_product(request: HttpRequest)-> Response:
+
     product_serializer = ProductSerializer(data=request.data)
     product_serializer.is_valid(raise_exception=True)
-    s3_client = boto3.client('s3',
-                              aws_access_key_id=settings.AWS_S3_ACCESS_KEY_ID, 
-                              aws_secret_access_key=settings.AWS_S3_SECRET_ACCESS_KEY)
+    
     image = product_serializer.validated_data['image']
     prod_name = product_serializer.validated_data['product_name']
+    
     try:
-        s3_client.upload_fileobj(image,
-                                 settings.AWS_STORAGE_BUCKET_NAME,
-                                 f'images/{prod_name}/{image.name}'    
-                                )
+        upDateImage(f'images/{prod_name}/{image.name}',image)
     except ClientError:
         return Response({ERROR:'imagefile not uploaded'}, 
                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
-        print(e)
         return Response({ERROR:'Something went wrong when uploading file'},
                          status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     product: Product = product_serializer.save()
     return Response(data={RESPONSE: 'product added successfully',
                            'product_id': product.id,
-                           'url': f'{product.image}'})
+                           })
 
 
 @api_view(['GET'])
@@ -119,7 +127,11 @@ def get_products(request: HttpRequest):
     if product_name:
         products = Product.objects.filter(product_name__contains=product_name)
     elif category:
-        products = Product.objects.filter(category=category)
+        try:
+           cate  = Category.objects.get(category_name=category)
+        except Category.DoesNotExist:
+            return Response({ERROR:'category with this name not found'},status=status.HTTP_404_NOT_FOUND)
+        products = Product.objects.filter(category=cate.id)
     else: 
         products = Product.objects.all()
     
@@ -132,16 +144,7 @@ class ProductView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAdminUser]
    
-    def upDateImage(self, name, image,):
-        s3_client = boto3.client('s3',
-                                aws_access_key_id=settings.AWS_S3_ACCESS_KEY_ID, 
-                                aws_secret_access_key=settings.AWS_S3_SECRET_ACCESS_KEY)
-        
-        s3_client.upload_fileobj(image,
-                                settings.AWS_STORAGE_BUCKET_NAME,
-                                f'images/{name}/{image.name}'    
-                                )
-       
+    
 
     def delete(self, request: HttpRequest, id):
         product: Product = None
@@ -170,13 +173,15 @@ class ProductView(APIView):
         prod_name = serializer.validated_data.get('product_name')
         if image is not None:
             if prod_name is not None:
-                self.upDateImage(prod_name, image=image)
+               
+                upDateImage(f'images/{prod_name}/{image.name}', image=image)
             else:
-                self.upDateImage(product.product_name, image=image)  
+                upDateImage(f'images/{product.product_name}/{image.name}', image=image)  
         
-        
+       
         updated_product = serializer.save()
-        
+       
+       
 
         
         return Response(data={RESPONSE: 'product updated successfully',
@@ -195,8 +200,8 @@ class FavouriteView(ViewSet):
     permission_classes = [IsAuthenticated]
 
     def list(self, request)-> Response:
-        favourite_products = FavouriteProducts.objects.filter(user=request.user)
-        favourite_serializer = FetchFavouriteSerializer(favourite_products, many=True)
+        favourite_products = FavouriteProducts.objects.all()
+        favourite_serializer = FavouriteSerializer(favourite_products, many=True)
         return Response(favourite_serializer.data)
     
     def create(self, request)-> Response:
