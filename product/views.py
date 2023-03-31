@@ -128,7 +128,7 @@ def get_products(request: HttpRequest):
         products = Product.objects.filter(product_name__contains=product_name)
     elif category:
         try:
-           cate  = Category.objects.get(category_name=category)
+           cate  = Category.objects.get(id=category)
         except Category.DoesNotExist:
             return Response({ERROR:'category with this name not found'},status=status.HTTP_404_NOT_FOUND)
         products = Product.objects.filter(category=cate.id)
@@ -137,6 +137,8 @@ def get_products(request: HttpRequest):
     
     product_serializer = ProductSerializer(products, many=True)
     return Response(product_serializer.data)
+
+
 
 
 class ProductView(APIView):
