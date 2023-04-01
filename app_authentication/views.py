@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.views import APIView
 
-from .serializer import AppUserRegisterSerializer,LoginSeriliazer
+from .serializer import AppUserRegisterSerializer,LoginSeriliazer, UserDetailSerializer
 from .models import AppUser
 
 RESPONSE = 'response'
@@ -69,7 +69,7 @@ def logout(request: HttpRequest)-> Response:
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def user_profile(request: HttpRequest)-> Response:
-    user = AppUserRegisterSerializer(request.user)
+    user = UserDetailSerializer(request.user)
     return Response(user.data)
 
 

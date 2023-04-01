@@ -27,5 +27,8 @@ class LoginSeriliazer(serializers.Serializer):
     
         
     
-
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppUser
+        fields = ['email', 'first_name', 'last_name', 'is_staff',]
 

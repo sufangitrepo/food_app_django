@@ -10,14 +10,16 @@ from .views import (
     add_product,
     get_products,
     ProductView,
-    FavouriteView
-   
+    FavouriteView,
+    ChargesView
+
 
     )
 
 router = DefaultRouter()
 
 router.register('favouriteProduct',FavouriteView, basename='favourite' )
+router.register('charges', ChargesView, basename='charges')
 
 
 urlpatterns = [

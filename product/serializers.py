@@ -4,7 +4,8 @@ from rest_framework import serializers
 from .models import (
     Category,
     Product,
-    FavouriteProducts
+    FavouriteProducts,
+    Charges
     )
 
 from app_authentication.serializer import LoginSeriliazer
@@ -29,7 +30,6 @@ class ProductSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         image = validated_data.pop('image')
         prod_name = validated_data['product_name']
-        # category  = validated_data.pop('category')
         product = Product.objects.create(**validated_data)
         product.image = f'images/{prod_name}/{image.name}'
         product.save()
@@ -45,7 +45,11 @@ class ProductSerializer(serializers.ModelSerializer):
         return product
     
 
-
+class ChargesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Charges
+        fields = '__all__'
+        
 
 
 class FavouriteSerializer(serializers.ModelSerializer):

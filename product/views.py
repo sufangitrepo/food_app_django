@@ -15,13 +15,15 @@ from botocore.exceptions import ClientError
 from .serializers import (
     CategorySerilaizer,
     ProductSerializer,
-    FavouriteSerializer
+    FavouriteSerializer,
+    ChargesSerializer
 )
 
 from .models import (
     Category,
     Product,
-    FavouriteProducts
+    FavouriteProducts,
+    Charges
     )
 
 
@@ -113,6 +115,7 @@ def add_product(request: HttpRequest)-> Response:
         return Response({ERROR:'Something went wrong when uploading file'},
                          status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+ 
     product: Product = product_serializer.save()
     return Response(data={RESPONSE: 'product added successfully',
                            'product_id': product.id,
@@ -160,7 +163,7 @@ class ProductView(APIView):
             return Response({RESPONSE: 'product deleted successfully', })    
 
 
-    def patch(self, request, id):
+    def put(self, request, id):
         product = None
         
         try:
@@ -169,38 +172,67 @@ class ProductView(APIView):
             return Response({ERROR: 'product not found'},status=status.HTTP_404_NOT_FOUND)   
         except Exception as e:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        serializer = ProductSerializer(product,data=request.data,partial=True)
+        serializer = ProductSerializer(product,data=request.data)
         serializer.is_valid(raise_exception=True)
         image = serializer.validated_data.get('image')
         prod_name = serializer.validated_data.get('product_name')
-        if image is not None:
-            if prod_name is not None:
-               
-                upDateImage(f'images/{prod_name}/{image.name}', image=image)
-            else:
-                upDateImage(f'images/{product.product_name}/{image.name}', image=image)  
+        try:
+           upDateImage(f'images/{prod_name}/{image.name}', image=image)
+        except ClientError:
+            return Response({ERROR:'imagefile not uploaded'}, 
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({ERROR:'Something went wrong when uploading file'},
+                         status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-       
         updated_product = serializer.save()
-       
-       
-
-        
         return Response(data={RESPONSE: 'product updated successfully',
                             'product_id': updated_product.id,
                             'url': f'{updated_product.image}'})
      
 
 
-"""
-  Favourte View 
-"""
+class ChargesView(ViewSet):
 
-class FavouriteView(ViewSet):
+    """
+    Extra Charges like delivery charges etc
+    """
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def list(self, request)-> Response:
+        charges = Charges.objects.all()
+        charges_serializer = ChargesSerializer(charges, many=True)
+        return Response(charges_serializer.data)
+    
+    
+    def create(self, request)-> Response:
+        charges_serializer = ChargesSerializer(data=request.data)
+        charges_serializer.is_valid(raise_exception=True)
+        charges = charges_serializer.save()
+        return Response({RESPONSE: 'added into charges', 'id': charges.id})
+    
+    
+
+    def destroy(self, request, pk=None):
+        try:
+            charges = Charges.objects.get(id=pk)
+            charges.delete()
+        except Charges.DoesNotExist:
+            return Response({ERROR:'Charges with this id not found'}
+                            ,status=status.HTTP_404_NOT_FOUND, )    
+        return Response({RESPONSE: 'deleted successfully'})
+    
+
+
+
+
+class FavouriteView(ViewSet):
+    
+    """
+    Favourte View 
+    """
     def list(self, request)-> Response:
         favourite_products = FavouriteProducts.objects.all()
         favourite_serializer = FavouriteSerializer(favourite_products, many=True)
@@ -222,6 +254,8 @@ class FavouriteView(ViewSet):
                             ,status=status.HTTP_404_NOT_FOUND, )    
         return Response({RESPONSE: 'deleted successfully'})
     
+
+
 
 
     
