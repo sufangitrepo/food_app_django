@@ -8,7 +8,7 @@ from .models import (
     Charges
     )
 
-from app_authentication.serializer import LoginSeriliazer
+from app_authentication.serializer import UserDetailSerializer
 
 
 class CategorySerilaizer(serializers.ModelSerializer):
@@ -57,12 +57,13 @@ class FavouriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FavouriteProducts
-        fields =  '__all__'
+        fields =  ['product', 'user']
 
 
 class FetchFavouriteSerializer(FavouriteSerializer):
-    user = LoginSeriliazer()
+    
+    user = UserDetailSerializer()
     product = ProductSerializer()
 
     class Meta(FavouriteSerializer.Meta):
-        pass
+        fields = ['user', 'product']

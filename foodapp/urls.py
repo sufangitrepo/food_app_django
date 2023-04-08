@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('foodapp/auth/', include('app_authentication.urls')),
     path('foodapp/', include('product.urls')),
+    path('foodapp/', include('cart.urls')),
 ]

@@ -16,6 +16,7 @@ from .serializers import (
     CategorySerilaizer,
     ProductSerializer,
     FavouriteSerializer,
+    FetchFavouriteSerializer,
     ChargesSerializer
 )
 
@@ -230,12 +231,16 @@ class ChargesView(ViewSet):
 
 class FavouriteView(ViewSet):
     
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    
     """
     Favourte View 
     """
     def list(self, request)-> Response:
         favourite_products = FavouriteProducts.objects.all()
-        favourite_serializer = FavouriteSerializer(favourite_products, many=True)
+        favourite_serializer = FetchFavouriteSerializer(favourite_products, many=True)
         return Response(favourite_serializer.data)
     
     def create(self, request)-> Response:
