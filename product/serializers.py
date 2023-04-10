@@ -66,4 +66,4 @@ class FetchFavouriteSerializer(FavouriteSerializer):
     product = ProductSerializer()
 
     class Meta(FavouriteSerializer.Meta):
-        fields = ['user', 'product']
+        fields = ['id', 'product']
