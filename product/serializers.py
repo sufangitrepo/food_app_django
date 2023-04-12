@@ -61,8 +61,7 @@ class FavouriteSerializer(serializers.ModelSerializer):
 
 
 class FetchFavouriteSerializer(FavouriteSerializer):
-    
-    
+
     product = ProductSerializer()
 
     class Meta(FavouriteSerializer.Meta):
