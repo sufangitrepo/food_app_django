@@ -75,9 +75,17 @@ class CartItemView(ViewSet):
 
 
     def list(self, request)->Response:
-        cart_items = CartItem.objects.all()
-        cartitem_serializer = CartItemSerializer(cart_items, many=True)
-        return Response(cartitem_serializer.data)
+        
+        user = request.user
+        caart = None
+        try:
+            cart = Cart.objects.get(user=user.id)
+        except Cart.DoesNotExist:
+            return Response({'error': 'cart doesnot exist'})
+        if cart:    
+            cart_items = CartItem.objects.filter(cart=cart.id)
+            cartitem_serializer = CartItemSerializer(cart_items, many=True)
+            return Response(cartitem_serializer.data)
     
 
 

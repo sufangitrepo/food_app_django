@@ -62,7 +62,7 @@ class FavouriteSerializer(serializers.ModelSerializer):
 
 class FetchFavouriteSerializer(FavouriteSerializer):
     
-    user = UserDetailSerializer()
+    
     product = ProductSerializer()
 
     class Meta(FavouriteSerializer.Meta):
