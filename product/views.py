@@ -239,9 +239,12 @@ class FavouriteView(ViewSet):
     Favourte View 
     """
     def list(self, request)-> Response:
-        favourite_products = FavouriteProducts.objects.all()
-        favourite_serializer = FetchFavouriteSerializer(favourite_products, many=True)
+        favourite_products = FavouriteProducts.objects.filter(
+            user=request.user.id)
+        favourite_serializer = FetchFavouriteSerializer(
+            favourite_products, many=True)
         return Response(favourite_serializer.data)
+    
     
     def create(self, request)-> Response:
         favourite_serializer = FavouriteSerializer(data=request.data, )
