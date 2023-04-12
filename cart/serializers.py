@@ -2,14 +2,19 @@ import decimal
 from rest_framework.serializers import ModelSerializer
 from .models import Cart, CartItem
 from product.models import Product, Charges
+from product.serializers import ProductSerializer
 
 class CartSerializer(ModelSerializer):
+
     class Meta:
         model = Cart
         fields = '__all__'
 
 
 class CartItemSerializer(ModelSerializer):
+    
+    product = ProductSerializer()
+
     class Meta:
         model = CartItem
         fields = '__all__'        
