@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from app_authentication.models import AppUser
 from .models import Cart, CartItem
-from .serializers import CartSerializer, CartItemSerializer
+from .serializers import CartSerializer, CartItemSerializer, AddCartItemSerializer
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -92,7 +92,7 @@ class CartItemView(ViewSet):
     def create(self, request: HttpRequest)-> Response:
         
             
-        cartitem_serializer = CartItemSerializer(data=request.data)
+        cartitem_serializer = AddCartItemSerializer(data=request.data)
         cartitem_serializer.is_valid(raise_exception=True)
         cartitem = cartitem_serializer.save()
         return Response({'cart_item':cartitem.id,

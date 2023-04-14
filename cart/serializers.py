@@ -12,6 +12,7 @@ class CartSerializer(ModelSerializer):
 
 
 class CartItemSerializer(ModelSerializer):
+
     
     product = ProductSerializer()
 
@@ -70,9 +71,12 @@ class CartItemSerializer(ModelSerializer):
             try:
                instance.cart.save()
             except Exception as e:
-               print(e)  
-        
-        
-        
-
+               print(e) 
         return cartitem
+    
+
+
+class AddCartItemSerializer(ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = '__all__'  
