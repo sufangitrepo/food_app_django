@@ -59,9 +59,11 @@ def get_cart(request: HttpRequest)-> Response:
         pass
     except Cart.DoesNotExist:
         Response({'error': 'cart not created'}, status=status.HTTP_404_NOT_FOUND)
-
-    cart = Cart.objects.get(user=request.user)
-    cart_serializer = CartSerializer(cart)
+    try:
+        cart = Cart.objects.get(user=request.user)
+        cart_serializer = CartSerializer(cart)
+    except Exception as e:
+        print(e)
     return Response(cart_serializer.data)
 
 
