@@ -31,11 +31,11 @@ class CartItemSerializer(ModelSerializer):
         other_charges = 0
 
         for item in CartItem.objects.filter(cart=cart.id):
-            sub_total += item.qty * item.product.price
-            sale_tax += item.qty * item.product.sale_tax
+            sub_total = sub_total + (item.qty * item.product.price)
+            sale_tax = sale_tax + (item.qty * item.product.sale_tax)
 
         for charges in Charges.objects.all():
-            other_charges += charges.amount
+           other_charges = other_charges + charges.amount
 
         cart.sub_total = sub_total
         cart.total_tax = sale_tax

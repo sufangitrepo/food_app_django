@@ -11,6 +11,9 @@ class Cart(models.Model):
     total = models.DecimalField(max_digits=30, decimal_places=2, default=0.0, )
     sub_total = models.DecimalField(max_digits=30, decimal_places=2, default=0.0,)
     total_tax = models.DecimalField(max_digits=100, decimal_places=2, default=0.0)
+
+
+
 class CartItem(models.Model):
 
     cart = models.ForeignKey(to=Cart, on_delete=models.CASCADE)
