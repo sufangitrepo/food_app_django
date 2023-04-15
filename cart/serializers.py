@@ -38,6 +38,7 @@ class CartItemSerializer(ModelSerializer):
             other_charges += charges.amount
 
         cart.sub_total = sub_total
+        cart.total_tax = sale_tax
         cart.total = sub_total + sale_tax + other_charges
         cart.save()
         return cartitem
@@ -64,7 +65,7 @@ class CartItemSerializer(ModelSerializer):
                 other_charges = other_charges + charges.amount
             
             instance.cart.sub_total = sub_total
-           
+            instance.cart.total_tax = sale_tax
             instance.cart.total = sub_total + sale_tax + other_charges
             
             

@@ -1,5 +1,9 @@
 from django.db import models
 from app_authentication.models import AppUser
+ 
+
+
+
 
 class Category(models.Model):
     category_name = models.CharField(unique=True, max_length=100)
@@ -33,3 +37,7 @@ class FavouriteProducts(models.Model):
     user = models.ForeignKey(to=AppUser, on_delete=models.CASCADE)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE)
     
+
+
+
+
