@@ -101,6 +101,7 @@ class CartItemView(ViewSet):
                           'response': 'item added successfully'})
     
 
+
     def partial_update(self, request: HttpRequest, pk=None)-> Response:
         cart_item = None
         try:
@@ -109,7 +110,7 @@ class CartItemView(ViewSet):
             return Response({'error': 'cart item does not exist'}, 
                             status=status.HTTP_404_NOT_FOUND)
         if cart_item:    
-            cartitem_serializer = CartItemSerializer(cart_item,
+            cartitem_serializer = AddCartItemSerializer(cart_item,
                                                      data=request.data,
                                                      partial=True)
             cartitem_serializer.is_valid(raise_exception=True)
@@ -125,9 +126,12 @@ class CartItemView(ViewSet):
             cart_item = CartItem.objects.get(id=pk)
             cart_item.delete()
             return Response({'response': 'item deleted successfully'})
-        except:
+        except CartItem.DoesNotExist:
             return Response({'error': 'cart item does not exist'}, 
                             status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return Response({'error':'something went wrong'})
             
 
 
