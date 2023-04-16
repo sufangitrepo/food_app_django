@@ -21,11 +21,24 @@ class CartItemSerializer(ModelSerializer):
         fields = '__all__'        
 
 
+   
+
+
+class AddCartItemSerializer(ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = '__all__'  
+
+
     def create(self, validated_data):
         cart: Cart = validated_data.get('cart')
+        product: Product = validated_data.get('product') 
         cartitem: CartItem = CartItem.objects.create(**validated_data)
+        print(cartitem.qty)
+        print(product.price)
+        cartitem.amount = cartitem.qty * product.price
         cartitem.save()
-        
+
         sub_total = 0
         sale_tax = 0
         other_charges = 0
@@ -74,10 +87,4 @@ class CartItemSerializer(ModelSerializer):
             except Exception as e:
                print(e) 
         return cartitem
-    
-
-
-class AddCartItemSerializer(ModelSerializer):
-    class Meta:
-        model = CartItem
-        fields = '__all__'  
+        
