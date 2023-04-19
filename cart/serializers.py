@@ -1,14 +1,37 @@
-import decimal
-from rest_framework.serializers import ModelSerializer
+
+from rest_framework.serializers import ModelSerializer,SerializerMethodField
 from .models import Cart, CartItem
 from product.models import Product, Charges
-from product.serializers import ProductSerializer
+from product.serializers import ProductSerializer, ChargesSerializer
+
 
 class CartSerializer(ModelSerializer):
-
+    
     class Meta:
         model = Cart
         fields = '__all__'
+
+
+
+
+class GetCartSerializer(CartSerializer):
+
+    charges = SerializerMethodField()
+
+    class Meta(CartSerializer.Meta):
+        fields = ['charges', 'user','total', 'sub_total', 'total_tax']
+
+
+    def get_charges(self, obj):
+        list_of_charges = []
+        charges = Charges.objects.all()
+        for charg in charges:
+            list_of_charges.append({'name': charg.charges_name,
+                                     'ammount': charg.amount})
+            
+        return  list_of_charges
+    
+
 
 
 class CartItemSerializer(ModelSerializer):
