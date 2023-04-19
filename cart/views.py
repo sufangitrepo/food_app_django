@@ -13,7 +13,10 @@ from rest_framework.permissions import IsAuthenticated
 
 from app_authentication.models import AppUser
 from .models import Cart, CartItem
-from .serializers import CartSerializer, CartItemSerializer, AddCartItemSerializer
+from .serializers import (CartSerializer,
+                          CartItemSerializer,
+                        AddCartItemSerializer,
+                        GetCartSerializer)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -50,23 +53,41 @@ def create_cart(request: HttpRequest)-> Response:
     except :
         return Response({'error':'somethign went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+
+
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])    
 def get_cart(request: HttpRequest)-> Response:
     cart = None 
     try:
-        pass
+        cart = Cart.objects.get(user=request.user.id)
     except Cart.DoesNotExist:
-        Response({'error': 'cart not created'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'error': 'cart not exist'},
+                  status=status.HTTP_404_NOT_FOUND)
+    if cart:
+        try:
+            cart_serializer = GetCartSerializer(cart)
+            return Response(cart_serializer.data)
+        except Exception as e:
+            print(e)
+            return Response()
+
+
+@api_view(['DELETE'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def delete_cart(request: HttpRequest)-> Response:
+    user = request.user
     try:
-        cart = Cart.objects.get(user=request.user)
-        cart_serializer = CartSerializer(cart)
-    except Exception as e:
-        print(e)
-    return Response(cart_serializer.data)
-
-
+        cart = Cart.objects.get(user=user.id)
+        cart.delete()
+        return Response({'response': 'deleted successfully'})
+    
+    except Cart.DoesNotExist:
+        return Response({'error': 'cart doesnot exist'},
+                         status=status.HTTP_404_NOT_FOUND)    
+    
 
 
 class CartItemView(ViewSet):
@@ -79,7 +100,7 @@ class CartItemView(ViewSet):
     def list(self, request)->Response:
         
         user = request.user
-        caart = None
+        cart = None
         try:
             cart = Cart.objects.get(user=user.id)
         except Cart.DoesNotExist:
@@ -121,7 +142,6 @@ class CartItemView(ViewSet):
 
 
     def destroy(self, request: HttpRequest, pk=None)-> Response:
-        
         try:
             cart_item = CartItem.objects.get(id=pk)
             cart_item.delete()

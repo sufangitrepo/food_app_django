@@ -21,4 +21,6 @@ urlpatterns = [
     path('foodapp/auth/', include('app_authentication.urls')),
     path('foodapp/', include('product.urls')),
     path('foodapp/', include('cart.urls')),
+    path('foodapp/', include('order.urls')),
+
 ]
