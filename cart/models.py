@@ -31,9 +31,12 @@ def update_cart_on_item_delete(sender, **kwargs):
     product: Product = instance.product
     amount = instance.amount
     qty = instance.qty
+
     total_sale_tax = product.sale_tax * qty
-    cart.sub_total = cart.sub_total - (amount + total_sale_tax)
-    cart.total = cart.sub_total - (amount + total_sale_tax)
+    
+    cart.sub_total = cart.sub_total - (amount)
+
+    cart.total = cart.total - (amount + total_sale_tax)
     cart.total_tax = cart.total_tax - total_sale_tax
     cart.save()
 
