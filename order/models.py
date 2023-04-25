@@ -31,8 +31,8 @@ class Order(models.Model):
     
     date = models.DateTimeField(auto_created=True, auto_now=True)
     status = models.CharField(max_length=50, choices=status_choices)
-    long = models.DecimalField(max_digits=50, decimal_places=2)
-    lat = models.DecimalField(max_digits=50, decimal_places=2)
+    long = models.DecimalField(max_digits=50, decimal_places=6)
+    lat = models.DecimalField(max_digits=50, decimal_places=6)
     extra = models.CharField(max_length=100)
     user_deal = models.BooleanField(default=True)
 
