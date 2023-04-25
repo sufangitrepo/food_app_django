@@ -17,6 +17,21 @@ class CategorySerilaizer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProductForOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+
+    # def to_representation(self, instance):
+    #     data = super(ProductForOrderSerializer, self).to_representation(instance)
+    #     # Modify the data here as needed
+    #     img = instance.image
+    #     print(img)
+    #     index=img.index('8000')
+    #     print(index, img)
+    #     data['image'] = img[index+4:]
+    #     return data    
 
 class ProductSerializer(serializers.ModelSerializer):
 
