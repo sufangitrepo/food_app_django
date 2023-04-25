@@ -12,8 +12,8 @@ class Category(models.Model):
 
 class Product(models.Model):
     
-    def path(instance, filename):
-        return ''.join(['images/',f'{instance.product_name}/',filename])
+    # def path(instance, filename):
+    #     return ''.join(['images/',f'{instance.product_name}/',filename])
    
     product_name = models.CharField(unique=True, max_length=100)
     image = models.ImageField()

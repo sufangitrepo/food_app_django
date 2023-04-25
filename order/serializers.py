@@ -2,7 +2,8 @@ from django.core.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 from .models import Order, OrderItem
 from cart.models import Cart, CartItem
-from product.serializers import ProductSerializer
+
+from product.serializers import ProductForOrderSerializer
 
 
 
@@ -45,9 +46,14 @@ class OrderSerializer(ModelSerializer):
 
 
 
+
+
 class OrderItemSerializer(ModelSerializer):
-    product = ProductSerializer()
+
+    product = ProductForOrderSerializer()
     
     class Meta:
         model = OrderItem
         fields = '__all__'
+
+        

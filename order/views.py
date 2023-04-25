@@ -104,5 +104,5 @@ class OrderItemView(ModelViewSet):
             query = OrderItem.objects.filter(order=order_id)
         else:
             query = self.get_queryset()
-        serializer = self.get_serializer(query, many=True)
+        serializer = OrderItemSerializer(query, many=True)
         return Response(serializer.data)
