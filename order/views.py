@@ -16,11 +16,26 @@ class OrderView(ViewSet):
 
     def list(self, request: HttpRequest)-> Response:
         status = request.query_params.get('status')
+        user_deal = request.query_params.get('user_deal')
+
         
-        if status:
+        if user_deal :
+            if user_deal == 'false':
+                print(user_deal)
+                orders = Order.objects.filter(user_deal=False)
+                order_serializer = OrderSerializer(orders, many=True)
+                return Response(order_serializer.data)
+            else :
+                orders = Order.objects.filter(user_deal=True)
+                order_serializer = OrderSerializer(orders, many=True)
+                return Response(order_serializer.data)
+        
+        elif status:
+            
             orders = Order.objects.filter(status=status, user_deal=True)
             order_serializer = OrderSerializer(orders, many=True)
             return Response(order_serializer.data)
+        
         else:
             orders = Order.objects.filter(user_deal=True)
             order_serializer = OrderSerializer(orders, many=True)
