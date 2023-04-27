@@ -2,13 +2,13 @@ from django.core.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 from .models import Order, OrderItem
 from cart.models import Cart, CartItem
-
+from app_authentication.serializer import UserDetailSerializer
 from product.serializers import ProductForOrderSerializer
 
 
 
 class OrderSerializer(ModelSerializer):
-    
+    user = UserDetailSerializer()
     class Meta:
         model = Order
         fields = '__all__'
