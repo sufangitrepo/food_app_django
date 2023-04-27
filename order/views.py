@@ -6,7 +6,10 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Order, OrderItem
-from .serializers import OrderSerializer, OrderItemSerializer
+from .serializers import (OrderSerializer, 
+                          OrderItemSerializer, 
+                          FetchOrderSerializer,
+                          )
 
 
 class OrderView(ViewSet):
@@ -23,22 +26,22 @@ class OrderView(ViewSet):
             if user_deal == 'false':
                 print(user_deal)
                 orders = Order.objects.filter(user_deal=False)
-                order_serializer = OrderSerializer(orders, many=True)
+                order_serializer = FetchOrderSerializer(orders, many=True)
                 return Response(order_serializer.data)
             else :
                 orders = Order.objects.filter(user_deal=True)
-                order_serializer = OrderSerializer(orders, many=True)
+                order_serializer = FetchOrderSerializer(orders, many=True)
                 return Response(order_serializer.data)
         
         elif status:
             
             orders = Order.objects.filter(status=status, user_deal=True)
-            order_serializer = OrderSerializer(orders, many=True)
+            order_serializer = FetchOrderSerializer(orders, many=True)
             return Response(order_serializer.data)
         
         else:
             orders = Order.objects.filter(user_deal=True)
-            order_serializer = OrderSerializer(orders, many=True)
+            order_serializer = FetchOrderSerializer(orders, many=True)
             return Response(order_serializer.data)
         
 
@@ -51,14 +54,12 @@ class OrderView(ViewSet):
                              status=status.HTTP_404_NOT_FOUND)
 
         if order:
-            order_serializer = OrderSerializer(order)   
+            order_serializer = FetchOrderSerializer(order)   
             return Response(order_serializer.data)
 
 
        
     def create(self, request: HttpRequest)-> Response:
-    
-        
         try:
             order_serializer = OrderSerializer(data=request.data )
             order_serializer.is_valid(raise_exception=True)

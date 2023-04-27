@@ -8,7 +8,7 @@ from product.serializers import ProductForOrderSerializer
 
 
 class OrderSerializer(ModelSerializer):
-    user = UserDetailSerializer()
+    # user = UserDetailSerializer()
     class Meta:
         model = Order
         fields = '__all__'
@@ -43,8 +43,13 @@ class OrderSerializer(ModelSerializer):
        
         return None
 
+class FetchOrderSerializer(ModelSerializer):
 
-
+    user = UserDetailSerializer()
+    
+    class Meta:
+        model = Order
+        fields = '__all__'
 
 
 
