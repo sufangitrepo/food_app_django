@@ -40,8 +40,8 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(to=Order, on_delete=models.CASCADE, )
-    product = models.ForeignKey(to=Product, on_delete=models.PROTECT)
+    order = models.ForeignKey(to=Order, on_delete=models.CASCADE )
+    product = models.ForeignKey(to=Product, on_delete=models.SET_NULL, null=True)
     amount = models.DecimalField(max_digits=100, decimal_places=2)
     qty = models.IntegerField()
     

@@ -76,12 +76,15 @@ class CategoryView(APIView):
         
         try:
              category: Category = Category.objects.get(id=id) 
+             print(category)
              category.delete()
+             print("exception")
              return Response({RESPONSE: 'category delete successfully', "category_id":id})
         except ObjectDoesNotExist :
              return Response({ERROR: 'Category not found with this id',}, status= status.HTTP_404_NOT_FOUND)
 
-
+        except Exception as e:
+             return Response(str(e))
 
 
 def upDateImage(name, image,):
