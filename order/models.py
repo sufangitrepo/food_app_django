@@ -21,7 +21,7 @@ class Order(models.Model):
 
 
     user = models.ForeignKey(to=AppUser, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=30)
+    phone = models.CharField(max_length=20)
     
     
     total_amount = models.DecimalField(max_digits=50, decimal_places=2, default=0)
