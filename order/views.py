@@ -1,22 +1,28 @@
 from django.http import HttpRequest
+from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
+
 
 from .models import Order, OrderItem
 from .serializers import (OrderSerializer, 
                           OrderItemSerializer, 
                           FetchOrderSerializer,
                           )
+from .custom_permission import CustomPermission
+
 
 
 class OrderView(ViewSet):
 
+    
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-
+     
+    
     def list(self, request: HttpRequest)-> Response:
         status = request.query_params.get('status')
         user_deal = request.query_params.get('user_deal')
@@ -44,7 +50,7 @@ class OrderView(ViewSet):
             order_serializer = FetchOrderSerializer(orders, many=True)
             return Response(order_serializer.data)
         
-
+    
     def retrieve(self, request: HttpRequest, pk=None):
         order = None
         try:
@@ -57,7 +63,7 @@ class OrderView(ViewSet):
             order_serializer = FetchOrderSerializer(order)   
             return Response(order_serializer.data)
 
-
+    
        
     def create(self, request: HttpRequest)-> Response:
         try:
@@ -99,6 +105,19 @@ class OrderView(ViewSet):
             return Response({'error':'order does not exist'},
                              status=status.HTTP_404_NOT_FOUND)
         
+
+
+class OrderViewByUser(APIView):
+    
+     
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request):
+        orders = Order.objects.filter(user=request.user.id)
+        order_serializer = FetchOrderSerializer(orders, many=True)
+        return Response(order_serializer.data)
 
 
 

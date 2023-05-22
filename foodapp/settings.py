@@ -51,7 +51,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -147,3 +146,11 @@ AWS_STORAGE_BUCKET_NAME = 'foodapp-bucket123'
 AWS_S3_SECRET_ACCESS_KEY = 'P02Cg7hqt5uU2A9X5IwbuhaD4Nr7GsF/2fqcVBT2'
 AWS_S3_ACCESS_KEY_ID = 'AKIA42NZWEATUTDHSO52'
 S3_BUCKET_URL = 'https://foodapp-bucket123.s3.ap-south-1.amazonaws.com'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'muhammadsufyan6915024@gmail.com'   # this is the email of host that will send the email verification message
+EMAIL_HOST_PASSWORD = 'fcskikuvjoxlfafy'       # this password will be created by going to the google acount admin console
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

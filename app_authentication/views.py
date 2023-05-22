@@ -1,4 +1,5 @@
 from django.http import HttpRequest
+from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.response import Response
 from rest_framework import status
@@ -71,6 +72,19 @@ def logout(request: HttpRequest)-> Response:
 def user_profile(request: HttpRequest)-> Response:
     user = UserDetailSerializer(request.user)
     return Response(user.data)
+
+
+@api_view(["GET"])
+def verify_user(request, token):
+    user:AppUser = AppUser.objects.get(verification_token=token)
+    if not user.is_verified:
+        user.is_verified = True
+        user.save()
+        print("verfires view", token)
+        return render(request=request, template_name="verified_page.html", context={'user':user.email})
+    return render(request, template_name='verified_page.html')
+
+
 
 
 
