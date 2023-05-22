@@ -25,6 +25,7 @@ class AppUserManager(BaseUserManager):
         user: AppUser = self.create_user( email=email,password=password, **fields)
         user.is_staff = True
         user.is_superuser =  True
+        is_verified = True
         user.save()
         return user
 
