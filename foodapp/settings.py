@@ -146,10 +146,10 @@ AUTH_USER_MODEL = 'app_authentication.AppUser'
 # MEDIA_URL = 'media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
-AWS_STORAGE_BUCKET_NAME = 'umarfoodd'
-AWS_S3_SECRET_ACCESS_KEY = 'NEs/2zOeNMQijz99/lmZAqS65OYnMdqnK3SRb10F'
-AWS_S3_ACCESS_KEY_ID = 'AKIA3TRRPXZ3KH4RLRM3'
-S3_BUCKET_URL = 'https://umarfoodd.s3.us-east-2.amazonaws.com'
+AWS_STORAGE_BUCKET_NAME = ''
+AWS_S3_SECRET_ACCESS_KEY = ''
+AWS_S3_ACCESS_KEY_ID = ''
+S3_BUCKET_URL = ''
 
 
 
